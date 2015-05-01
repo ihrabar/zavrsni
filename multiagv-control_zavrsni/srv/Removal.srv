@@ -1,0 +1,6 @@
+string vehicleName
+geometry_msgs/PoseStamped reqVehPose
+
+string[] blockedVehicles
+---
+bool removalStarted

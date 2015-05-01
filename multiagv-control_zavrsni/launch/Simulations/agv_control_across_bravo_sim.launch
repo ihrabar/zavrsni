@@ -1,0 +1,43 @@
+<launch>
+
+	<!-- Vehicle names and priorities -->
+	<rosparam param="vehicleNames">['Bravo', 'Delta']</rosparam>
+	<rosparam param="vehiclePriorities">[1, 2]</rosparam>
+	
+	<!-- Pure pursuit parameters -->
+	<rosparam param="lookAheadDistance">0.2</rosparam>
+	<rosparam param="linVelocity">0.3</rosparam>
+	<rosparam param="maxAngVelocity">0.8</rosparam>
+	
+	<arg name="robot_name" default="Bravo"/>
+	<arg name="map_file" default="$(find agv_control)/maps/across.yaml"/>
+	<arg name="mat_file" default="$(find agv_control)/params/params_p3dx.mat"/>
+	<arg name="rviz_file" default="$(find agv_control)/RViz/rviz_across_bravo_sim.rviz" />
+	
+	<group ns="$(arg robot_name)">
+	
+	    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+    		<param name="frame_id" value="/map" />
+    	    </node>
+    
+           <node pkg="agv_control" name="pathPlanner" type="pathPlanner" args="$(arg mat_file)" />
+    	
+    	   <node pkg="agv_control" name="agvController" type="agvController" args= "$(arg mat_file)" />
+    	
+    </group>
+    
+    <include file="$(find p2os_urdf)/launch/upload_pioneer3dx.xml" />
+
+    <include file="$(find agv_control)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+    
+    <node pkg="agv_control" name="poseEstimator" type="poseEstimator" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_file)" />
+	
+	<!-- Starting the gateway -->
+	<include file="$(find skilled_lgv_utils)/launch/p3dx/gateway_bravo.launch">
+    	<arg name="hub_uri" value="tamara"/>
+    </include>
+    
+</launch>

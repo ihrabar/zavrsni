@@ -1,0 +1,63 @@
+<launch>
+	
+	<!-- This launch file should be started on the central computer when controlling Pioneer 3DX vehicles WITHOUT multimaster -->
+	
+	<arg name="map_file" default="gallery_NEW.yaml"/>
+	<arg name="rviz_file" default="$(find AGVControl)/RViz/rviz_galerija_exp.vcg" />
+	<arg name="mat_file" default="$(find AGVControl)/params/params_p3dx.mat"/>
+	
+	<!--<node pkg="rqt_console" name="rqt_console" type="rqt_console" />-->
+	
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find AGVControl)/maps/$(arg map_file)" >
+    	<param name="frame_id" value="/map" />
+    </node>
+
+	<!-- Vehicle names and priorities -->
+	<rosparam param="vehicleNames">['Alfa', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot']</rosparam>
+	<rosparam param="vehiclePriorities">[1, 2, 3, 4, 5, 6]</rosparam>
+	
+	<!-- Pure pursuit parameters -->
+	<rosparam param="lookAheadDistance">0.2</rosparam>
+	<rosparam param="linVelocity">0.15</rosparam>
+	<rosparam param="maxAngVelocity">0.3</rosparam>
+  	
+  	<!-- The following node (tfTransforms) is used to publish (1:1) transform between each "<vehicle_name>/map" and the global "/map" frames
+  	in order to vizualize all vehicle paths and other info in RViz environment in the global /map frame -->
+  	<!--<node pkg="AGVControl" name="tfTransforms" type="tfTransforms" />-->
+    
+    <!--<<node pkg="p2os_dashboard" type="p2os_dashboard" name="dashboard" ns="Alfa"/>
+    <node pkg="p2os_dashboard" type="p2os_dashboard" name="dashboard" ns="Bravo"/>
+    <node pkg="p2os_dashboard" type="p2os_dashboard" name="dashboard" ns="Charlie"/>
+    <node pkg="p2os_dashboard" type="p2os_dashboard" name="dashboard" ns="Delta"/>
+    <node pkg="p2os_dashboard" type="p2os_dashboard" name="dashboard" ns="Echo"/>
+    <node pkg="p2os_dashboard" type="p2os_dashboard" name="dashboard" ns="Foxtrot"/>-->
+    
+    <!--<include file="$(find p2os_urdf)/launch/upload_pioneer3dx.xml" />
+    
+    <include file="$(find p2os_urdf)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="Alfa"/>
+    </include>
+    
+    <include file="$(find p2os_urdf)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="Bravo"/>
+    </include>
+    
+    <include file="$(find p2os_urdf)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="Charlie"/>
+    </include>
+    
+    <include file="$(find p2os_urdf)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="Echo"/>
+    </include>
+    
+    <include file="$(find p2os_urdf)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="Foxtrot"/>
+    </include>-->
+    
+    <!--<include file="$(find p3dx_host)/launch/p3dx.launch" />-->
+    
+    <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_file)" />-->
+    
+    <!--<node pkg="AGVControl" name="missionPublisher" type="missionPublisher" />-->
+    
+</launch>

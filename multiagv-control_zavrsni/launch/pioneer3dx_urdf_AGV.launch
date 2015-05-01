@@ -1,0 +1,14 @@
+<launch>
+	
+	<arg name="robot_name" default="pioneer"/>
+	<!--<include file="$(find p2os_urdf)/launch/upload_pioneer3dx.xml" />-->
+
+  	<node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher" ns="$(arg robot_name)">
+    	<remap from="joint_state" to="joint_state"/>
+    	<param name="publish_frequency" type="double" value="15.0"/>
+    	<param name="tf_prefix" type="string" value="/$(arg robot_name)"/>
+  	</node>
+  
+	<node pkg="p2os_urdf" type="publisher" name="publisher" ns="$(arg robot_name)"/>
+	
+</launch>

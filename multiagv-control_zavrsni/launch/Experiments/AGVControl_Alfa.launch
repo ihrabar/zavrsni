@@ -1,0 +1,30 @@
+<launch>
+
+	<!-- Vehicle names and priorities -->
+	<rosparam param="vehicleNames">['Alfa', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot']</rosparam>
+	<rosparam param="vehiclePriorities">[1, 2, 3, 4, 5, 6]</rosparam>
+	
+	<!-- Pure pursuit parameters -->
+	<rosparam param="lookAheadDistance">0.2</rosparam>
+	<rosparam param="linVelocity">0.15</rosparam>
+	<rosparam param="maxAngVelocity">0.3</rosparam>
+	
+	<arg name="robot_name" default="Alfa"/>
+	<arg name="mat_file" default="$(find AGVControl)/params/params_p3dx.mat"/>
+	
+	<group ns="$(arg robot_name)">
+		<node pkg="AGVControl" name="pathPlanner" type="pathPlanner" args="$(arg mat_file)" />
+    	<node pkg="AGVControl" name="agvController" type="agvController" args= "$(arg mat_file)" />
+    </group>
+    
+    <!-- we include preexisting launch files which will set up the pioneer robot (in one line!) -->
+	<include file="$(find AGVControl)/launch/p3dx-p2os-amcl_ID.launch" >
+		<arg name="robot_name" value="$(arg robot_name)"/>
+	</include>
+	
+	<!-- Starting the gateway -->
+	<include file="$(find rocon_gateway)/launch/alpha_gateway.launch">
+    	<arg name="hub_uri" value="ID-5-04"/>
+    </include>
+    
+</launch>

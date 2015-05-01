@@ -1,0 +1,64 @@
+<launch>
+
+	<arg name="map_file" default="$(find AGVControl)/maps/gallery_NEW.yaml"/>
+	
+	<arg name="rviz_file" default="$(find AGVControl)/RViz/rviz_gallery_sim.vcg" />
+	
+	<arg name="mat_file" default="$(find AGVControl)/params/params_p3dx.mat"/>
+	
+	<arg name="missions_file" default="$(find AGVControl)/missions/missions.txt"/>
+	
+	<node pkg="rqt_console" name="rqt_console" type="rqt_console" />
+	
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+    	<param name="frame_id" value="/map" />
+    </node>
+
+	<!-- Vehicle names and priorities -->
+	<rosparam param="vehicleNames">['Charlie', 'Echo', 'Foxtrot']</rosparam>
+	<rosparam param="vehiclePriorities">[1, 2, 3]</rosparam>
+	
+	<!-- Pure pursuit parameters for simulation-->
+	<rosparam param="lookAheadDistance">0.2</rosparam>
+	<rosparam param="linVelocity">0.3</rosparam>
+	<rosparam param="maxAngVelocity">0.8</rosparam>
+	
+	<rosparam param="posTolerance">0.05</rosparam>
+    
+    <node pkg="AGVControl" name="pathPlanner" type="pathPlanner" args="$(arg mat_file)" />
+    
+    <node pkg="AGVControl" name="AGV_ROS_Controller" type="AGV_ROS_Controller" ns="Charlie" args= "$(arg mat_file)" >
+    	<remap from="/Charlie/map" to="/map"/>
+    	<remap from="/Charlie/getPlanSrv" to="/getPlanSrv"/>
+    </node>
+    
+    <node pkg="AGVControl" name="AGV_ROS_Controller" type="AGV_ROS_Controller" ns="Echo" args= "$(arg mat_file)" >
+    	<remap from="/Echo/map" to="/map"/>
+    	<remap from="/Echo/getPlanSrv" to="/getPlanSrv"/>
+    </node>
+    
+    <node pkg="AGVControl" name="AGV_ROS_Controller" type="AGV_ROS_Controller" ns="Foxtrot" args= "$(arg mat_file)" >
+    	<remap from="/Foxtrot/map" to="/map"/>
+    	<remap from="/Foxtrot/getPlanSrv" to="/getPlanSrv"/>
+    </node>
+    
+    <include file="$(find p2os_urdf)/launch/upload_pioneer3dx.xml" />
+    
+    <include file="$(find AGVControl)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="Charlie"/>
+    </include>
+    
+    <include file="$(find AGVControl)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="Echo"/>
+    </include>
+    
+    <include file="$(find AGVControl)/launch/pioneer3dx_urdf_AGV.launch">
+    	<arg name="robot_name" value="Foxtrot"/>
+    </include>
+    
+    <node pkg="AGVControl" name="motionSim" type="motionSim" />
+    
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_file)" />
+    
+</launch>
+
